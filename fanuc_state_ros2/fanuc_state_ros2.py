@@ -93,7 +93,7 @@ class FanucStateRos2(Node):
         self.robot_status_publisher = self.create_publisher(RobotStatus, "/robot_status", ROBOT_STATUS_QOS)
         self.state_timer_callback_group = MutuallyExclusiveCallbackGroup()
         self.state_timer = self.create_timer(1/10, self.state_timer_callback, callback_group=self.state_timer_callback_group)
-        self.hold_publishing_timer = self.create_timer(5, self.hold_publishing_callback, callback_group=self.state_timer_callback_group)
+        # self.hold_publishing_timer = self.create_timer(5, self.hold_publishing_callback, callback_group=self.state_timer_callback_group)
 
     def send_false_all(self):
         self.bit_publisher["HOLD"].publish(self.false_msg)
@@ -108,6 +108,10 @@ class FanucStateRos2(Node):
         try:
             if self.states["FAULT"]:
                 raise Exception("Robot is in fault state")
+
+            if self.states["PROGON"] or self.states["PAUSED"]:
+                self.stop_program()
+            
             # self.send_false_all()
             self.bit_publisher["HOLD"].publish(self.true_msg)
             self.bit_publisher["IMSTP"].publish(self.true_msg)
@@ -145,9 +149,14 @@ class FanucStateRos2(Node):
         self.bit_publisher["IMSTP"].publish(self.true_msg)
         self.bit_publisher["SFSPD"].publish(self.true_msg)
 
+    def stop_program(self):
+        self.bit_publisher["HOLD"].publish(self.false_msg)
+        self.bit_publisher["CYCLE_STOP"].publish(self.true_msg)
+        time.sleep(0.1)
+        self.bit_publisher["CYCLE_STOP"].publish(self.false_msg)
 
     def stop_program_callback(self, request, response):
-        self.bit_publisher["HOLD"].publish(self.false_msg)
+        self.stop_program()
         return response
 
     def reset_fault_callback(self, request, response):
