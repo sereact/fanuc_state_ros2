@@ -84,37 +84,46 @@ class FanucStateRos2(Node):
         self.false_msg = Bool()
         self.false_msg.data = False
         self.services_callback_group = MutuallyExclusiveCallbackGroup()
-        self.create_service(self.name+"/start_program", BoolSrv, self.start_program_callback, callback_group=self.services_callback_group)
-        self.create_service(self.name+"/stop_program", BoolSrv, self.stop_program_callback, callback_group=self.services_callback_group)
-        self.create_service(self.name+"/reset_fault", BoolSrv, self.reset_fault_callback, callback_group=self.services_callback_group)
+        self.create_service(BoolSrv, self.name+"/start_program", self.start_program_callback, callback_group=self.services_callback_group)
+        self.create_service(BoolSrv ,self.name+"/stop_program", self.stop_program_callback, callback_group=self.services_callback_group)
+        self.create_service(BoolSrv ,self.name+"/reset_fault", self.reset_fault_callback, callback_group=self.services_callback_group)
         
         self.robot_status = RobotStatus()
 
-        self.robot_status_publisher = self.create_publisher(RobotStatus, "/robot_status", 10)
+        self.robot_status_publisher = self.create_publisher(RobotStatus, "/robot_status", ROBOT_STATUS_QOS)
         self.state_timer_callback_group = MutuallyExclusiveCallbackGroup()
         self.state_timer = self.create_timer(1/10, self.state_timer_callback, callback_group=self.state_timer_callback_group)
         self.hold_publishing_timer = self.create_timer(5, self.hold_publishing_callback, callback_group=self.state_timer_callback_group)
+
+    def send_false_all(self):
+        self.bit_publisher["HOLD"].publish(self.false_msg)
+        self.bit_publisher["ENABLE"].publish(self.false_msg)
+        self.bit_publisher["PNS_STROBE"].publish(self.false_msg)
+        self.bit_publisher["PNS1"].publish(self.false_msg)
+        self.bit_publisher["PROD_START"].publish(self.false_msg)
+        time.sleep(0.1)
 
 
     def start_program_callback(self, request, response):
         try:
             if self.states["FAULT"]:
                 raise Exception("Robot is in fault state")
+            # self.send_false_all()
             self.bit_publisher["HOLD"].publish(self.true_msg)
             self.bit_publisher["IMSTP"].publish(self.true_msg)
             self.bit_publisher["SFSPD"].publish(self.true_msg)
-            time.sleep(1)
+            time.sleep(0.1)
 
             self.bit_publisher["ENABLE"].publish(self.true_msg)
-            time.sleep(0.5)
-            self.bit_publisher["PSN1"].publish(self.true_msg)
+            time.sleep(0.1)
+            self.bit_publisher["PNS1"].publish(self.true_msg)
             self.bit_publisher["PROD_START"].publish(self.true_msg)
-            time.sleep(0.5)
+            time.sleep(0.1)
 
             self.bit_publisher["PNS_STROBE"].publish(self.true_msg)
-            time.sleep(0.5)
+            time.sleep(0.1)
             self.bit_publisher["PNS_STROBE"].publish(self.false_msg)
-            time.sleep(0.5)
+            time.sleep(0.1)
             response.response = True
 
         except Exception as e:
@@ -138,7 +147,7 @@ class FanucStateRos2(Node):
 
 
     def stop_program_callback(self, request, response):
-        self.bit_publisher["HOLDER"].publish(self.false_msg)
+        self.bit_publisher["HOLD"].publish(self.false_msg)
         return response
 
     def reset_fault_callback(self, request, response):
@@ -150,11 +159,11 @@ class FanucStateRos2(Node):
 
     def state_timer_callback(self):
         if self.states["FAULT"]:
-            self.robot_status.in_error = TriState.TRUE
-            self.robot_status.e_stopped = TriState.TRUE
+            self.robot_status.in_error.val = TriState.TRUE
+            self.robot_status.e_stopped.val = TriState.TRUE
         else:
-            self.robot_status.e_stopped = TriState.FALSE
-            self.robot_status.in_error = TriState.FALSE
+            self.robot_status.e_stopped.val = TriState.FALSE
+            self.robot_status.in_error.val = TriState.FALSE
             
         self.robot_status_publisher.publish(self.robot_status)
         

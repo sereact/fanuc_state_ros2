@@ -1,25 +1,25 @@
 {
     "UO":
     {
-        "CMD_ENABLED": "/io/main/main/in_5_A/state",
-        "FAULT": "/io/main/main/in_5_A/state",
-        "BATT_ALARM": "/io/main/main/in_5_A/state",
-        "BUSY": "/io/main/main/in_5_A/state"
+        "CMD_ENABLED": "/io/main/in_3_A/state",
+        "FAULT": "/io/main/in_2_A/state",
+        "BATT_ALARM": "/io/main/in_4_A/state",
+        "BUSY": "/io/main/in_1_A/state"
     },
     "UI":
     {
-        "IMSTP": "/io/main/main/out_5_A/set",
-        "HOLD": "/io/main/main/out_5_A/set",
-        "SFSPD": "/io/main/main/out_5_A/set",
-        "CYCLE_STOP": "/io/main/main/out_5_A/set",
-        "FAULT_RESET": "/io/main/main/out_5_A/set",
-        "START": "/io/main/main/out_5_A/set",
-        "ENABLE": "/io/main/main/out_5_A/set",
-        "PNS1": "/io/main/main/out_5_A/set",
-        "PNS2": "/io/main/main/out_5_A/set",
-        "PNS3": "/io/main/main/out_5_A/set",
-        "PNS_STROBE": "/io/main/main/out_5_A/set",
-        "PROD_START": "/io/main/main/out_5_A/set"
+        "IMSTP": "/io/main/out_5_A_/set",
+        "HOLD": "/io/main/out_1_A/set",
+        "SFSPD": "/io/main/out_7_A_/set",
+        "CYCLE_STOP": "/io/main/out_5_A_/set",
+        "FAULT_RESET": "/io/main/out_5_A/set",
+        "START": "/io/main/out_2_A/set",
+        "ENABLE": "/io/main/out_6_A/set",
+        "PNS1": "/io/main/out_3_A/set",
+        "PNS2": "/io/main/out_7_A/set",
+        "PNS3": "/io/main/out_4_A/set",
+        "PNS_STROBE": "/io/main/out_2_A/set",
+        "PROD_START": "/io/main/out_8_A/set"
     }
 
 }

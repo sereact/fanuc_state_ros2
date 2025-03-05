@@ -4,7 +4,6 @@ import logging
 from logging import LogRecord
 
 import colorlog
-import requests
 
 DISABLE_LIST = ["__main__"]
 
