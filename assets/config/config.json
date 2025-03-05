@@ -1,0 +1,25 @@
+{
+    "UO":
+    {
+        "CMD_ENABLED": "/io/main/main/in_5_A/state",
+        "FAULT": "/io/main/main/in_5_A/state",
+        "BATT_ALARM": "/io/main/main/in_5_A/state",
+        "BUSY": "/io/main/main/in_5_A/state"
+    },
+    "UI":
+    {
+        "IMSTP": "/io/main/main/out_5_A/set",
+        "HOLD": "/io/main/main/out_5_A/set",
+        "SFSPD": "/io/main/main/out_5_A/set",
+        "CYCLE_STOP": "/io/main/main/out_5_A/set",
+        "FAULT_RESET": "/io/main/main/out_5_A/set",
+        "START": "/io/main/main/out_5_A/set",
+        "ENABLE": "/io/main/main/out_5_A/set",
+        "PNS1": "/io/main/main/out_5_A/set",
+        "PNS2": "/io/main/main/out_5_A/set",
+        "PNS3": "/io/main/main/out_5_A/set",
+        "PNS_STROBE": "/io/main/main/out_5_A/set",
+        "PROD_START": "/io/main/main/out_5_A/set"
+    }
+
+}

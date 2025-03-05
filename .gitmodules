@@ -1,0 +1,3 @@
+[submodule "colcon_ws/src/sereact_custom_messaging"]
+	path = colcon_ws/src/sereact_custom_messaging
+	url = git@github.com:sereact/sereact_custom_messaging.git
