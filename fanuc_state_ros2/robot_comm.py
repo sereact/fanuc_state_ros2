@@ -46,15 +46,25 @@ opout_uo_pns6                       = 16
 opout_uo_pns7                       = 17
 opout_uo_pns8                       = 18
 opout_uo_snack                      = 19
-    
+
+from threading import Lock
 
 class RobotComm:
     def __init__(self, ip, port):
-        self.sock = self.open_socket(ip, port)
+        self.ip = ip
+        self.port = port
+        self._sock = self.open_socket(ip, port)
+        self.lock = Lock()
 
     def __del__(self):
-        self.sock.close()
+        self._sock.close()
+    
 
+    @property
+    def sock(self):
+        with self.lock:
+            return self._sock
+    
 
     def open_socket(self, robot_ip, snpx_port):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -237,6 +247,7 @@ class RobotComm:
 
             if (self.get_di(opout_uo_tpenbl) == True):
                 print ('TP enabled')
+
             return (False)
 
             return (False)
@@ -399,8 +410,6 @@ class RobotComm:
         return (prg_aborted)
 
 
-
-
     def RobotIMSTP(self) -> bool:
         """
         RobotIMSTP: Immediate Stop of robot and pause of programs over UOP interface
@@ -424,6 +433,7 @@ class RobotComm:
 # Map DO[1-18] to rack 0, slot 0, start 21
 # Map UI[1-18] to rack 0, slot 0, start 21
 # Map UO[1-20] to rack 0, slot 0, start 1
+
 if __name__ == '__main__':
     port = 18245
     ip = "192.168.1.100"

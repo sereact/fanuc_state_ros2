@@ -121,6 +121,11 @@ class FanucStateRos2(Node):
     def state_timer_callback(self):
         for state_key, bit in STATE_CONFIG.items():
             self.states[state_key] = self.robot_ip_comm.get_di(bit)
+        
+        if self.states["PROGON"]:
+            self.robot_status.motion_possible.val = TriState.TRUE
+        else:
+            self.robot_status.motion_possible.val = TriState.FALSE
 
         if self.states["FAULT"]:
             self.robot_status.in_error.val = TriState.TRUE
